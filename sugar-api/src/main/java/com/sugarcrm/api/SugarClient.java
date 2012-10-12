@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
+
+import org.apache.commons.codec.net.URLCodec;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sugarcrm.api.v4.impl.SugarApi;
-import com.sugarcrm.api.v4.impl.SugarLoginResponse;
 import com.sugarcrm.api.v4.impl.SugarApi.SugarLoginRequest;
+import com.sugarcrm.api.v4.impl.SugarLoginResponse;
 
 public class SugarClient 
 {
@@ -37,8 +38,7 @@ public class SugarClient
 			
 			SugarLoginResponse jResp = null;
 			try {
-				@SuppressWarnings("deprecation")
-				String response = sugarHttpPost(REST_ENDPOINT+"?method=login&response_type=JSON&input_type=JSON&rest_data="+URLEncoder.encode(json.toJson(loginReq)));
+				String response = sugarHttpPost(REST_ENDPOINT+"?method=login&response_type=JSON&input_type=JSON&rest_data="+new URLCodec().encode(json.toJson(loginReq)));
 				jResp = json.fromJson(response, SugarLoginResponse.class);
 			} catch (Exception e) {
 				e.printStackTrace();
