@@ -38,6 +38,8 @@ public class SugarClientTest
         	SugarSession session = client.getSugarSession("Ethan", "Sugar1");
 					assertNotNull(session);
 					assertNotNull(session.getSessionID());
+					assertEquals(session.getUserName(), "Ethan");
+					assertNotNull(session.getUserId());
 				} catch (Exception e) {
 					e.printStackTrace();
 					fail(e.getLocalizedMessage());

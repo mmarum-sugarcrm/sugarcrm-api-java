@@ -9,9 +9,13 @@ import java.net.URLEncoder;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sugarcrm.api.v4.impl.SugarApi;
+import com.sugarcrm.api.v4.impl.SugarLoginResponse;
+import com.sugarcrm.api.v4.impl.SugarApi.SugarLoginRequest;
 
 public class SugarClient 
 {
+	private SugarApi sugar = new SugarApi();
 	
 	private String REST_ENDPOINT = null;
     
@@ -28,14 +32,13 @@ public class SugarClient
   	public SugarSession getSugarSession(SugarCredentials credentials) throws SugarApiException {
   		Gson json = new GsonBuilder().create();
   		
-  		SugarLoginRequest loginReq = new SugarLoginRequest();
-  		loginReq.user_auth = credentials;
+  		SugarLoginRequest loginReq = sugar.new SugarLoginRequest();
+  		loginReq.setUserAuth(credentials);
 			
 			SugarLoginResponse jResp = null;
 			try {
 				@SuppressWarnings("deprecation")
 				String response = sugarHttpPost(REST_ENDPOINT+"?method=login&response_type=JSON&input_type=JSON&rest_data="+URLEncoder.encode(json.toJson(loginReq)));
-				System.out.println("Sugar Login Response: " +response);
 				jResp = json.fromJson(response, SugarLoginResponse.class);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -43,30 +46,6 @@ public class SugarClient
 			return jResp;
   	}
   	
-  	class SugarLoginRequest{
-  		protected SugarCredentials user_auth;
-  	}
-  	
-  	class NameValue{
-  		protected String name;
-  		protected String value;
-  	}
-  	
-  	class SugarLoginResponse implements SugarSession{
-  		protected String id;
-  		//Should be 'Users'
-  		protected String module_name;
-  		protected UsersResponse name_value_list;
-			public String getSessionID() {
-				return id;
-			}
-  	}
-  	
-  	class UsersResponse{
-  		protected NameValue user_id;
-  		protected NameValue user_name;
-  		protected NameValue user_language;
-  	}
 
   	public String sugarHttpPost(String urlStr) throws Exception {
   		URL url = new URL(urlStr);
