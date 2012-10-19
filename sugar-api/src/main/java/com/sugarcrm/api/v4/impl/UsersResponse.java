@@ -6,8 +6,8 @@ import com.sugarcrm.api.User;
 
 public class UsersResponse extends SugarBean implements User{
   
-  public UsersResponse(HashMap<String, HashMap<String, String>> values_map) {
-    super(values_map);
+  public UsersResponse(HashMap<String, HashMap<String, String>> values_map, String moduleName) {
+    super(values_map, moduleName);
   }
   public String getUserId() {
     return values.get("user_id").get("value");

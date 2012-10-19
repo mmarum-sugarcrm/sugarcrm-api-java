@@ -13,6 +13,8 @@ public class SugarLoginResponse extends SugarBean implements SugarSession{
   }
   
   public User getUser() {
-    return new UsersResponse(values);
+    User user = new UsersResponse(values, module_name);
+    return user;
   }
+
 }

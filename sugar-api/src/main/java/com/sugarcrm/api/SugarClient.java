@@ -26,6 +26,10 @@ public class SugarClient
   public SugarSession getSugarSession(SugarCredentials credentials) throws SugarApiException{
     return sugar.getSugarSession(credentials);
   }
+  
+  public SugarBean getBean(SugarSession session, String moduleName, String guid, SugarBean type) throws SugarApiException{
+    return sugar.getBean(session, moduleName, guid, type);
+  }
     
   	
 }

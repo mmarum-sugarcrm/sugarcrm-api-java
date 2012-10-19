@@ -5,7 +5,7 @@ package com.sugarcrm.api;
  * @author mmarum
  *
  */
-public interface User {
+public interface User extends SugarBean {
   
   public String getUserId();
   public String getUserName();

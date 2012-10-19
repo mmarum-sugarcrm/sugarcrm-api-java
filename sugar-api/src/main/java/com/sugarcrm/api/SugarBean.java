@@ -12,4 +12,5 @@ import java.util.Collection;
 public interface SugarBean {
   String get(String fieldName);
   Collection<String> getFieldNames();
+  String getModuleName();
 }

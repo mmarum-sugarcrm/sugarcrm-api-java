@@ -6,11 +6,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sugarcrm.api.SugarApiException;
+import com.sugarcrm.api.SugarBean;
 import com.sugarcrm.api.SugarCredentials;
 import com.sugarcrm.api.SugarSession;
 
@@ -23,9 +25,14 @@ import com.sugarcrm.api.SugarSession;
 public class SugarApi {
   
   private String REST_ENDPOINT = null;
+  
+  private URLCodec codec = null;
+  private Gson json = null;
 
   public SugarApi(String sugarUrl){
     REST_ENDPOINT = sugarUrl + "/service/v4/rest.php";
+    json = new GsonBuilder().create();
+    codec = new URLCodec();
   }
   
   public class SugarLoginRequest{
@@ -69,20 +76,41 @@ public class SugarApi {
   }
   
   public SugarSession getSugarSession(SugarCredentials credentials) throws SugarApiException {
-    Gson json = new GsonBuilder().create();
+    
 
     SugarLoginRequest loginReq = new SugarLoginRequest();
     loginReq.setUserAuth(credentials);
 
     SugarLoginResponse jResp = null;
     try {
-      String response = postToSugar(REST_ENDPOINT+"?method=login&response_type=JSON&input_type=JSON&rest_data="+new URLCodec().encode(json.toJson(loginReq)));
+      String response = postToSugar(REST_ENDPOINT+"?method=login&response_type=JSON&input_type=JSON&rest_data="+codec.encode(json.toJson(loginReq)));
       jResp = json.fromJson(response, SugarLoginResponse.class);
     } catch (Exception e) {
       e.printStackTrace();
       throw new SugarApiException("Sugar Login failed", e);
     }
     return jResp;
+  }
+  
+  public SugarBean getBean(SugarSession session, String moduleName, String guid, SugarBean type) throws SugarApiException{
+    Gson json = new GsonBuilder().create();
+    String sessionId = session.getSessionID();
+    String data = "{\"session\":\""+sessionId+"\",\"module_name\":\""+moduleName+"\",\"id\":\""+guid+"\"}";
+    String response = null;
+    try {
+      response = postToSugar(REST_ENDPOINT+"?method=get_entry&response_type=JSON&input_type=JSON&rest_data="+codec.encode(json.toJson(data)));
+    } catch (EncoderException e) {
+      e.printStackTrace();
+      throw new SugarApiException("Could not fetch bean.", e);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new SugarApiException("Could not fetch bean.", e);
+    }
+    if(type == null){
+      return json.fromJson(response, SugarBean.class);
+    } else {
+      return json.fromJson(response, type.getClass());
+    }
   }
 	
 	
