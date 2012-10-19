@@ -37,7 +37,7 @@ public class SugarClientTest extends TestCase {
       User user = session.getUser();
       assertNotNull(user);
       assertEquals(user.getUserName(),"Ethan");
-      assertNotNull(user.getUserId());
+      assertEquals(user.getUserId(), "bc2879c5-1e7c-d4de-7664-4ee2a42f0a58");
     } catch (Exception e) {
       e.printStackTrace();
       fail(e.getLocalizedMessage());
