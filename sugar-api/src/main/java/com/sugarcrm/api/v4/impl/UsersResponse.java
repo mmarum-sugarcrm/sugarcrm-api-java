@@ -6,6 +6,10 @@ import com.sugarcrm.api.User;
 
 public class UsersResponse extends SugarBean implements User{
   
+  public UsersResponse(){
+    super();
+  }
+  
   public UsersResponse(HashMap<String, HashMap<String, String>> values_map, String moduleName) {
     super(values_map, moduleName);
   }
