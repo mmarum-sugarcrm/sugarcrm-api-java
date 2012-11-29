@@ -1,7 +1,5 @@
 package com.sugarcrm.api;
 
-import com.sugarcrm.api.v4.impl.UsersResponse;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -31,15 +29,15 @@ public class SugarClientTest extends TestCase {
    * Rigorous Test :-)
    */
   public void testLogin() {
-    SugarClient client = new SugarClient("https://demo.sugarondemand.com/mmarum_vert/seed1/jiveworld");
+    SugarClient client = new SugarClient("http://sugar658-sugartest.rhcloud.com");
     try {
-      SugarSession session = client.getSugarSession("Ethan", "Sugar1");
+      SugarSession session = client.getSugarSession("admin", "admin");
       assertNotNull(session);
       assertNotNull(session.getSessionID());
       User user = session.getUser();
       assertNotNull(user);
-      assertEquals(user.getUserName(),"Ethan");
-      assertEquals(user.getUserId(), "bc2879c5-1e7c-d4de-7664-4ee2a42f0a58");
+      assertEquals(user.getUserName(),"admin");
+      assertEquals(user.getUserId(), "1");
       assertEquals(user.getModuleName(), "Users");
     } catch (Exception e) {
       e.printStackTrace();
@@ -48,11 +46,12 @@ public class SugarClientTest extends TestCase {
   }
   
   public void testGetBean(){
-    SugarClient client = new SugarClient("https://demo.sugarondemand.com/mmarum_vert/seed1/jiveworld");
+    SugarClient client = new SugarClient("http://sugar658-sugartest.rhcloud.com");
     try{
-      SugarSession session = client.getSugarSession(new SugarCredentials("Ethan", "Sugar1"));
-      SugarBean bean = client.getBean(session, "Opportunities", "3D24053f7c-abb8-4245-405d-4f2b1f71e1f0", com.sugarcrm.api.v4.impl.SugarBean.class);
-      assertEquals(bean.getModuleName(),"Opportunities");
+      SugarSession session = client.getSugarSession(new SugarCredentials("admin", "admin"));
+      SugarBean bean = client.getBean(session, "Opportunities", "9b4b7e72-6459-a199-25f5-50b7492a2777");
+      assertEquals("Opportunities", bean.getModuleName());
+      assertEquals("Prospecting", bean.get("sales_stage"));
       
     }catch(Exception e){
       e.printStackTrace();

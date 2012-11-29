@@ -5,6 +5,12 @@ import java.util.HashMap;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * SugarBean response for the v4 API
+ * 
+ * @author mmarum
+ *
+ */
 public class SugarBean implements com.sugarcrm.api.SugarBean{
   
   @SerializedName("name_value_list")
@@ -13,13 +19,21 @@ public class SugarBean implements com.sugarcrm.api.SugarBean{
   @SerializedName("module_name")
   protected String moduleName;
   
+  @SerializedName("id")
+  protected String id;
+  
   //Needed for Gson
   public SugarBean(){
+
   }
   
   public SugarBean(HashMap<String, HashMap<String, String>> name_value_list, String module_name) {
     values = name_value_list;
     moduleName = module_name;
+  }
+  
+  public String getId(){
+    return id;
   }
 
   public String get(String fieldName) {

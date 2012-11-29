@@ -27,20 +27,8 @@ public class SugarClient
     return sugar.getSugarSession(credentials);
   }
   
-  public SugarBean getBean(SugarSession session, String moduleName, String guid, SugarBean type) throws SugarApiException{
-    return sugar.getBean(session, moduleName, guid, type);
-  }
-  
-  public SugarBean getBean(SugarSession session, String moduleName, String guid, Class<? extends SugarBean> clazz) throws SugarApiException{
-    try {
-      return sugar.getBean(session, moduleName, guid, clazz.newInstance());
-    } catch (InstantiationException e) {
-      e.printStackTrace();
-      throw new SugarApiException("Could not instantiate SugarBean class", e);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-      throw new SugarApiException("Could not instantiate SugarBean class", e);
-    }
+  public SugarBean getBean(SugarSession session, String moduleName, String guid) throws SugarApiException{
+    return sugar.getBean(session, moduleName, guid);
   }
     
   	

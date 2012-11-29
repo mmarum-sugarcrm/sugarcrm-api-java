@@ -10,6 +10,7 @@ import java.util.Collection;
  */
 
 public interface SugarBean {
+  String getId();
   String get(String fieldName);
   Collection<String> getFieldNames();
   String getModuleName();

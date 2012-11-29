@@ -11,6 +11,7 @@ import org.apache.commons.codec.net.URLCodec;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 import com.sugarcrm.api.SugarApiException;
 import com.sugarcrm.api.SugarBean;
 import com.sugarcrm.api.SugarCredentials;
@@ -40,6 +41,23 @@ public class SugarApi {
     public void setUserAuth(SugarCredentials auth){
       user_auth = auth;
     }
+  }
+  
+  public class GetEntryRequest{
+    
+    public GetEntryRequest(String session, String moduleName, String id){
+      this.session = session;
+      this.moduleName = moduleName;
+      this.id = id;
+    }
+    
+    protected String session;
+    
+    @SerializedName("module_name")
+    protected String moduleName;
+    
+    protected String id;
+    
   }
 	
   public class NameValue{
@@ -71,7 +89,9 @@ public class SugarApi {
     rd.close();
 
     conn.disconnect();
-    System.out.println(sb.toString());
+    if(System.getenv("sugardebug") != null){
+      System.out.println(sb.toString());
+    }
     return sb.toString();
   }
   
@@ -92,13 +112,12 @@ public class SugarApi {
     return jResp;
   }
   
-  public SugarBean getBean(SugarSession session, String moduleName, String guid, SugarBean type) throws SugarApiException{
-    Gson json = new GsonBuilder().create();
+  public SugarBean getBean(SugarSession session, String moduleName, String guid) throws SugarApiException{
     String sessionId = session.getSessionID();
-    String data = "{\"session\":\""+sessionId+"\",\"module_name\":\""+moduleName+"\",\"id\":\""+guid+"\"}";
+    GetEntryRequest req = new GetEntryRequest(sessionId, moduleName, guid);
     String response = null;
     try {
-      response = postToSugar(REST_ENDPOINT+"?method=get_entry&response_type=JSON&input_type=JSON&rest_data="+codec.encode(json.toJson(data)));
+      response = postToSugar(REST_ENDPOINT+"?method=get_entry&response_type=JSON&input_type=JSON&rest_data="+codec.encode(json.toJson(req)));
     } catch (EncoderException e) {
       e.printStackTrace();
       throw new SugarApiException("Could not fetch bean.", e);
@@ -106,10 +125,19 @@ public class SugarApi {
       e.printStackTrace();
       throw new SugarApiException("Could not fetch bean.", e);
     }
-    if(type == null){
-      return json.fromJson(response, SugarBean.class);
+
+    GetEntryResponse entryResp = json.fromJson(response, GetEntryResponse.class);
+    if(entryResp.getEntryList() == null){
+      ErrorResponse error = json.fromJson(response, ErrorResponse.class);
+      SugarApiException ex = new SugarApiException(error.getName());
+      ex.setDescription(error.getDescription());
+      ex.setNumber(error.getNumber());
+      throw ex;
+    }
+    if(entryResp.getEntryList().length > 0){
+      return entryResp.getEntryList()[0];
     } else {
-      return json.fromJson(response, type.getClass());
+      return null;
     }
   }
 	

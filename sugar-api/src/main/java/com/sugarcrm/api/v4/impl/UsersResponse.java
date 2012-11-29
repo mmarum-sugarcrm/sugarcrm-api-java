@@ -4,6 +4,12 @@ import java.util.HashMap;
 
 import com.sugarcrm.api.User;
 
+/**
+ * Users module response in v4 API
+ * 
+ * @author mmarum
+ *
+ */
 public class UsersResponse extends SugarBean implements User{
   
   public UsersResponse(){
